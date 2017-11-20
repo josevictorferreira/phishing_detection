@@ -1,3 +1,4 @@
+from subprocess import check_output
 from flask import Flask
 from flask import request
 from sklearn.ensemble import RandomForestClassifier
@@ -9,9 +10,22 @@ APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 app = Flask(__name__)
 
+@app.route('/check_cert', methods=['GET'])
+def check_cert():
+    url = request.args.get('url')
+    result = str(check_output(['sslyze', '--certinfo', url+':443']), 'utf-8')
+    lines = result.split('\n')
+    for line in lines:
+        if ('Microsoft CA Store' in line):
+            if ('OK' in line):
+                return '1';
+            else:
+                return '0';
+    return '0';
+
 @app.route('/check', methods=['GET', 'POST'])
 def check_phishing():
-    real_data = request.args.to_dicts()
+    real_data = request.args.to_dict()
     dataframe = pd.read_csv(APP_ROOT + '/datasets/training_dataset.csv')
     columns = list(filter(lambda x: 'Unnamed' not in x, dataframe.columns))
     df = dataframe[columns]
