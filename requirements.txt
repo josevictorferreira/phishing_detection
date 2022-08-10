@@ -27,7 +27,7 @@ MarkupSafe==1.0
 mistune==0.8.1
 msgpack-python==0.4.8
 nassl==0.17.0
-nbconvert==5.3.1
+nbconvert==6.3.0
 nbformat==4.4.0
 neovim==0.2.0
 notebook==5.2.1
